@@ -1,7 +1,3 @@
-"""
-能源数据分析系统 - 修复空白图像问题
-确保所有图表正确显示和保存
-"""
 
 import pandas as pd
 import numpy as np
@@ -15,19 +11,18 @@ import seaborn as sns
 from datetime import datetime
 import matplotlib
 
-# 强制使用交互式后端（解决空白图像问题）
-matplotlib.use('TkAgg')  # 也可以尝试 'Qt5Agg' 或其他可用后端
+matplotlib.use('TkAgg') 
 
 
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 
-# 配置日志
+
 logging.basicConfig(level=logging.INFO,
                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# 配置路径
+
 class Config:
     def __init__(self):
         self.BASE_DIR = Path(__file__).resolve().parent
@@ -41,7 +36,7 @@ class Config:
 
 config = Config()
 
-# 数据加载模块（增强数据检查）
+
 class DataLoader:
     @staticmethod
     def load_data():
@@ -50,7 +45,7 @@ class DataLoader:
             logger.info(f"正在从 {config.DATA_PATH} 加载数据...")
             df = pd.read_csv(config.DATA_PATH)
 
-            # 数据验证
+           
             if df.empty:
                 raise ValueError("加载的数据为空！")
 
@@ -62,7 +57,6 @@ class DataLoader:
             logger.error(f"加载数据失败: {e}")
             raise
 
-# 数据分析模块（修复图像显示）
 class DataAnalyzer:
     @staticmethod
     def analyze(df):
@@ -85,7 +79,7 @@ class DataAnalyzer:
         """数据可视化（确保图像显示）"""
         logger.info("生成数据可视化...")
 
-        # 数值特征的分布
+   
         num_cols = df.select_dtypes(include=['float64', 'int64']).columns
         if len(num_cols) > 0:
             fig1, axes = plt.subplots(nrows=len(num_cols), figsize=(10, 2*len(num_cols)))
@@ -98,12 +92,11 @@ class DataAnalyzer:
 
             plt.tight_layout()
             plt.savefig(config.OUTPUT_DIR / "distributions.png")
-            plt.show()  # 确保显示
+            plt.show()  
             plt.close(fig1)
         else:
             logger.warning("没有数值列可用于分布图")
 
-        # 相关性热力图
         numeric_df = df.select_dtypes(include=['number'])
         if len(numeric_df.columns) > 1:
             fig2 = plt.figure(figsize=(10, 8))
@@ -111,12 +104,12 @@ class DataAnalyzer:
             plt.title("特征相关性热力图")
             plt.tight_layout()
             plt.savefig(config.OUTPUT_DIR / "correlation.png")
-            plt.show()  # 确保显示
+            plt.show() 
             plt.close(fig2)
         else:
             logger.warning("不足的数值列用于相关性热力图")
 
-# 特征工程模块（保持不变）
+
 class FeatureEngineer:
     @staticmethod
     def preprocess(df, target_col=None):
@@ -158,7 +151,7 @@ class FeatureEngineer:
         logger.info(f"特征工程完成 - 目标列: {target_col}")
         return X, y, target_col
 
-# 建模模块（修复预测图显示）
+
 class EnergyModel:
     def __init__(self):
         self.model = LinearRegression()
@@ -190,7 +183,7 @@ class EnergyModel:
 
         return metrics
 
-# 主流程
+
 def main():
     try:
         logger.info("=== 能源数据分析系统启动 ===")
